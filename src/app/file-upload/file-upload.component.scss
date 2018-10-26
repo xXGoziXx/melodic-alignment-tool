@@ -1,0 +1,30 @@
+@import '../../styles.scss';
+
+.dropzone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  font-weight: 200;
+  height: 300px;
+  border: 2px dashed mat-color($accent);
+  border-radius: 5px;
+  font-size: 1.2em;
+  background: mat-color($primary, A700);
+
+  margin: 10px 0;
+
+  &.hovering {
+    border: 2px solid mat-color($accent, A200);
+    color: #dadada !important;
+    background: mat-color($primary, 600);
+  }
+}
+
+progress::-webkit-progress-value {
+  transition: width 0.1s ease;
+}
+textarea {
+  width: 100%;
+  height: auto;
+}

@@ -3,7 +3,15 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  firebase: {
+    apiKey: 'AIzaSyAOE4ssGlpnOhQ8NVUxeHS9BmKeY2hvBpE',
+    authDomain: 'melodic-alignment-tool.firebaseapp.com',
+    databaseURL: 'https://melodic-alignment-tool.firebaseio.com',
+    projectId: 'melodic-alignment-tool',
+    storageBucket: 'melodic-alignment-tool.appspot.com',
+    messagingSenderId: '294875357460',
+  },
 };
 
 /*
