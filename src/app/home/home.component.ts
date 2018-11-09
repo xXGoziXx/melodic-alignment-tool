@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -6,6 +6,7 @@ import {
   FormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
+import { FileUploadComponent } from '../file-upload/file-upload.component';
 @Component({
   selector: 'mat-home',
   templateUrl: './home.component.html',

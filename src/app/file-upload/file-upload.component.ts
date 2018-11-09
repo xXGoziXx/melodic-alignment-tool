@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
+
 import {
   AngularFireStorage,
   AngularFireUploadTask,
@@ -6,15 +7,20 @@ import {
 import { Observable } from 'rxjs';
 import { finalize, tap } from 'rxjs/operators';
 import { AngularFirestore } from 'angularfire2/firestore';
+
 import * as MidiConvert from 'midiconvert';
+import WaveSurfer from 'wavesurfer.js';
 import * as $ from 'jquery';
+
 @Component({
   selector: 'mat-file-upload',
   templateUrl: './file-upload.component.html',
   styleUrls: ['./file-upload.component.scss'],
 })
 export class FileUploadComponent implements OnInit {
-  file: any;
+  // Determines which step user is on
+  @Input()
+  step: string;
   // Main task
   task: AngularFireUploadTask;
 
@@ -98,12 +104,34 @@ export class FileUploadComponent implements OnInit {
       return midi;
     });
   }
+  // Loads Vocal Data
+  loadVocalData(url) {
+    $('#waveform').html('');
+    const wavesurfer = WaveSurfer.create({
+      container: '#waveform',
+      waveColor: '#455a64',
+      progressColor: '#FFD183',
+      cursorColor: '#43A047',
+      responsive: true,
+      autoCenter: true,
+    });
+    wavesurfer.load(url);
+  }
+  // Reveals next button for Steps
+  revealNext(i) {
+    $('#next' + i).show();
+  }
   // Determines if the upload task is active
   isActive(snapshot) {
     return (
       snapshot.state === 'running' &&
       snapshot.bytesTransferred < snapshot.totalBytes
     );
+  }
+
+  // Toggles an Element's Visibility
+  toggleElementVisibility(id) {
+    $('#' + id).toggle('slow');
   }
 
   ngOnInit() {}

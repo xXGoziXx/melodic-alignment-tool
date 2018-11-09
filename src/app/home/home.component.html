@@ -1,36 +1,44 @@
 <mat-vertical-stepper labelPosition="bottom"
-                      [linear]="isLinear"
+                      [linear]="!isLinear"
                       #stepper>
-  <mat-step [stepControl]="firstFormGroup">
+  <ng-template matStepperIcon="done"
+               let-index="index"
+               matStepLabel></ng-template>
+  <mat-step label="Import a MIDI file"
+            [stepControl]="firstFormGroup">
     <form [formGroup]="firstFormGroup">
-      <ng-template matStepLabel>Import/Create a MIDI file</ng-template>
-      <mat-file-upload></mat-file-upload>
+      <mat-file-upload [step]="'1'"></mat-file-upload>
+      <br>
       <div>
         <button mat-stroked-button
-                matStepperNext>Next</button>
+                style="display: none"
+                matStepperNext
+                id="next1">Next</button>
       </div>
     </form>
   </mat-step>
-  <mat-step [stepControl]="secondFormGroup">
+  <mat-step label="Import an audio Vocal file"
+            [stepControl]="secondFormGroup">
     <form [formGroup]="secondFormGroup">
-      <ng-template matStepLabel>Fill out your address</ng-template>
-      <mat-form-field>
-        <input matInput
-               placeholder="Address"
-               formControlName="secondCtrl"
-               required>
-      </mat-form-field>
+
       <div>
-        <button mat-stroked-button
-                matStepperPrevious>Back</button>
-        <button mat-stroked-button
-                matStepperNext>Next</button>
+
+        <mat-file-upload [step]="'2'"></mat-file-upload>
+        <br>
+        <div>
+          <button mat-stroked-button
+                  matStepperPrevious>Back</button>
+          <button mat-stroked-button
+                  style="display: none"
+                  matStepperNext
+                  id="next2">Next</button>
+        </div>
       </div>
     </form>
   </mat-step>
-  <mat-step>
-    <ng-template matStepLabel>Done</ng-template>
+  <mat-step label="Result">
     You are now done.
+    <br> Heres the result:
     <div>
       <button mat-stroked-button
               matStepperPrevious>Back</button>
