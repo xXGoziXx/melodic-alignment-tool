@@ -1,0 +1,40 @@
+[debug] [2018-11-09T17:06:43.578Z] ----------------------------------------------------------------------
+[debug] [2018-11-09T17:06:43.581Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\gosar\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js deploy
+[debug] [2018-11-09T17:06:43.581Z] CLI Version:   6.0.1
+[debug] [2018-11-09T17:06:43.581Z] Platform:      win32
+[debug] [2018-11-09T17:06:43.581Z] Node Version:  v10.12.0
+[debug] [2018-11-09T17:06:43.583Z] Time:          Fri Nov 09 2018 17:06:43 GMT+0000 (Greenwich Mean Time)
+[debug] [2018-11-09T17:06:43.583Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2018-11-09T17:06:43.597Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2018-11-09T17:06:43.598Z] > authorizing via signed-in user
+[debug] [2018-11-09T17:06:43.598Z] [iam] checking project melodic-alignment-tool for permissions ["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","datastore.indexes.create","datastore.indexes.delete","datastore.indexes.list","datastore.indexes.update","firebase.projects.get","firebasedatabase.instances.update","firebasehosting.sites.update","firebaserules.releases.create","firebaserules.releases.update","firebaserules.rulesets.create"]
+[debug] [2018-11-09T17:06:43.600Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/melodic-alignment-tool:testIamPermissions  
+
+[debug] [2018-11-09T17:06:44.467Z] <<< HTTP RESPONSE 200
+[debug] [2018-11-09T17:06:44.469Z] >>> HTTP REQUEST GET https://firebase.googleapis.com/v1beta1/projects/melodic-alignment-tool  
+ 
+[debug] [2018-11-09T17:06:44.770Z] <<< HTTP RESPONSE 200
+[info] 
+[info] === Deploying to 'melodic-alignment-tool'...
+[info] 
+[info] i  deploying database, storage, firestore, functions, hosting
+[info] Running command: npm --prefix "%RESOURCE_DIR%" run lint
+[info] +  functions: Finished running predeploy script.
+[info] i  database: checking rules syntax...
+[debug] [2018-11-09T17:06:49.830Z] >>> HTTP REQUEST PUT https://melodic-alignment-tool.firebaseio.com/.settings/rules.json?dryRun=true  
+ {
+  /* Visit https://firebase.google.com/docs/database/security to learn more about security rules. */
+  "rules": {
+    ".read": false,
+    ".write": false
+  }
+}
+[debug] [2018-11-09T17:06:50.589Z] <<< HTTP RESPONSE 200
+[info] +  database: rules syntax for database melodic-alignment-tool is valid
+[debug] [2018-11-09T17:06:50.593Z] >>> HTTP REQUEST GET https://appengine.googleapis.com/v1/apps/melodic-alignment-tool  
+ 
+[debug] [2018-11-09T17:06:51.565Z] <<< HTTP RESPONSE 200
+[info] i  storage: checking storage.rules for compilation errors...
+[debug] [2018-11-09T17:06:51.571Z] >>> HTTP REQUEST POST https://firebaserules.googleapis.com/v1/projects/melodic-alignment-tool:test  
+
