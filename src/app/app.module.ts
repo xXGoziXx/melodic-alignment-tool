@@ -60,6 +60,8 @@ const appRoutes: Routes = [
   { path: 'home', component: HomeComponent },
   { path: 'midi-creator', component: MidiCreatorComponent },
   { path: 'about', component: AboutComponent },
+  { path: '', redirectTo: '/home', pathMatch: 'full' },
+  { path: '**', component: HomeComponent },
 ];
 
 @NgModule({
