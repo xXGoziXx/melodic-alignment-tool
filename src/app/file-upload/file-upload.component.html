@@ -1,74 +1,79 @@
-<div id="MIDIUpload"
-     *ngIf="step === '1'">
-  <div align="center"
-       class="dropzone"
-       matDropZone
-       (hovered)="toggleHover($event)"
-       (dropped)="startUpload($event, 'MIDI')"
-       [class.hovering]="isHovering">
+<div id="MIDIUpload" *ngIf="step === '1'">
+  <div
+    align="center"
+    class="dropzone"
+    matDropZone
+    (hovered)="toggleHover($event)"
+    (dropped)="startUpload($event, 'MIDI')"
+    [class.hovering]="isHovering"
+  >
     <h3>MIDI File Drop Zone</h3>
     <p>Drag and Drop a File</p>
-    <div class="file"
-         align="center">
-      <input class="file-input"
-             type="file"
-             accept="audio/midi"
-             (change)="startUpload($event.target.files, 'MIDI')"
-             hidden
-             #fileInput>
+    <div class="file" align="center">
+      <input
+        class="file-input"
+        type="file"
+        accept="audio/midi"
+        (change)="startUpload($event.target.files, 'MIDI')"
+        hidden
+        #fileInput
+      />
       <p><b>or</b></p>
-      <br>
-      <button mat-flat-button
-              color="primary"
-              (click)="fileInput.click();">
+      <br />
+      <button mat-flat-button color="primary" (click)="fileInput.click()">
         Choose a File &nbsp;<mat-icon>cloud_upload</mat-icon>
       </button>
-
     </div>
   </div>
-  <br>
-  <div align="center"
-       *ngIf="snapshot | async as snap">
-    <div align="center"
-         *ngIf="percentage | async as pct">
-      <hr>
-      <mat-progress-bar mode="determinate"
-                        [value]="pct"
-                        max="100">
-
+  <br />
+  <div align="center" *ngIf="(snapshot | async) as snap">
+    <div align="center" *ngIf="(percentage | async) as pct">
+      <hr />
+      <mat-progress-bar mode="determinate" [value]="pct" max="100">
       </mat-progress-bar>
-      <br>
-      {{ snap.bytesTransferred | fileSize }} of {{ snap.totalBytes | fileSize }} ({{ pct | number }}%)
-      <hr>
+      <br />
+      {{ snap.bytesTransferred | fileSize }} of
+      {{ snap.totalBytes | fileSize }} ({{ pct | number }}%)
+      <hr />
     </div>
-    <br>
+    <br />
     <mat-button-toggle-group>
-      <mat-button-toggle (click)="task.pause()"
-                         class="button primary"
-                         [disabled]="!isActive(snap)">Pause
+      <mat-button-toggle
+        (click)="task.pause()"
+        class="button primary"
+        [disabled]="!isActive(snap)"
+        >Pause
         <mat-icon>pause</mat-icon>
       </mat-button-toggle>
-      <mat-button-toggle (click)="task.cancel()"
-                         class="button danger"
-                         [disabled]="!isActive(snap)">Cancel &nbsp;
+      <mat-button-toggle
+        (click)="task.cancel()"
+        class="button danger"
+        [disabled]="!isActive(snap)"
+        >Cancel &nbsp;
         <mat-icon>cancel</mat-icon>
       </mat-button-toggle>
-      <mat-button-toggle (click)="task.resume()"
-                         class="button primary"
-                         [disabled]="!(snap?.state === 'paused')">Resume
+      <mat-button-toggle
+        (click)="task.resume()"
+        class="button primary"
+        [disabled]="!(snap?.state === 'paused')"
+        >Resume
         <mat-icon>play_arrow</mat-icon>
       </mat-button-toggle>
     </mat-button-toggle-group>
-    <div align="center"
-         *ngIf="downloadURL | async as url">
-      <br>
-      <hr>
-      <br>
-      <button color="accent"
-              (click)="loadMidiData(url);toggleElementVisibility('midiform');revealNext(1)"
-              mat-button>See the MIDI Data</button>
-      <div id="midiform"
-           style="display: none">
+    <div align="center" *ngIf="(downloadURL | async) as url">
+      <br />
+      <hr />
+      <br />
+      <button
+        color="accent"
+        (click)="
+          loadMidiData(url); toggleElementVisibility('midiform'); revealNext(1)
+        "
+        mat-button
+      >
+        See the MIDI Data
+      </button>
+      <div id="midiform" style="display: none">
         <h3>Midi Data</h3>
         <!-- load a midi file -->
         <textarea id="midiContent"></textarea>
@@ -76,80 +81,125 @@
     </div>
   </div>
 </div>
-<div id="VocalUpload"
-     *ngIf="step === '2'">
-  <div align="center"
-       class="dropzone"
-       matDropZone
-       (hovered)="toggleHover($event)"
-       (dropped)="startUpload($event, 'Vocal')"
-       [class.hovering]="isHovering">
+<div id="VocalUpload" *ngIf="step === '2'">
+  <div
+    align="center"
+    class="dropzone"
+    matDropZone
+    (hovered)="toggleHover($event)"
+    (dropped)="startUpload($event, 'Vocal')"
+    [class.hovering]="isHovering"
+  >
     <h3>Vocal File Drop Zone</h3>
     <p>Drag and Drop a File</p>
-    <div class="file"
-         align="center">
-      <input class="file-input"
-             type="file"
-             accept="audio/*"
-             (change)="startUpload($event.target.files, 'Vocal')"
-             hidden
-             #fileInput>
+    <div class="file" align="center">
+      <input
+        class="file-input"
+        type="file"
+        accept="audio/*"
+        (change)="startUpload($event.target.files, 'Vocal')"
+        hidden
+        #fileInput
+      />
       <p><b>or</b></p>
-      <br>
-      <button mat-flat-button
-              color="primary"
-              (click)="fileInput.click();">
+      <br />
+      <button mat-flat-button color="primary" (click)="fileInput.click()">
         Choose a File &nbsp;<mat-icon>cloud_upload</mat-icon>
       </button>
-
     </div>
   </div>
-  <br>
-  <div align="center"
-       *ngIf="snapshot | async as snap">
-    <div align="center"
-         *ngIf="percentage | async as pct">
-      <hr>
-      <mat-progress-bar mode="determinate"
-                        [value]="pct"
-                        max="100">
-
+  <br />
+  <div align="center" *ngIf="(snapshot | async) as snap">
+    <div align="center" *ngIf="(percentage | async) as pct">
+      <hr />
+      <mat-progress-bar mode="determinate" [value]="pct" max="100">
       </mat-progress-bar>
-      <br>
-      {{ snap.bytesTransferred | fileSize }} of {{ snap.totalBytes | fileSize }} ({{ pct | number }}%)
-      <hr>
+      <br />
+      {{ snap.bytesTransferred | fileSize }} of
+      {{ snap.totalBytes | fileSize }} ({{ pct | number }}%)
+      <hr />
     </div>
-    <br>
+    <br />
     <mat-button-toggle-group>
-      <mat-button-toggle (click)="task.pause()"
-                         class="button primary"
-                         [disabled]="!isActive(snap)">Pause
+      <mat-button-toggle
+        (click)="task.pause()"
+        class="button primary"
+        [disabled]="!isActive(snap)"
+        >Pause
         <mat-icon>pause</mat-icon>
       </mat-button-toggle>
-      <mat-button-toggle (click)="task.cancel()"
-                         class="button danger"
-                         [disabled]="!isActive(snap)">Cancel &nbsp;
+      <mat-button-toggle
+        (click)="task.cancel()"
+        class="button danger"
+        [disabled]="!isActive(snap)"
+        >Cancel &nbsp;
         <mat-icon>cancel</mat-icon>
       </mat-button-toggle>
-      <mat-button-toggle (click)="task.resume()"
-                         class="button primary"
-                         [disabled]="!(snap?.state === 'paused')">Resume
+      <mat-button-toggle
+        (click)="task.resume()"
+        class="button primary"
+        [disabled]="!(snap?.state === 'paused')"
+        >Resume
         <mat-icon>play_arrow</mat-icon>
       </mat-button-toggle>
     </mat-button-toggle-group>
-    <div align="center"
-         *ngIf="downloadURL | async as url">
-      <br>
-      <hr>
-      <br>
-      <button color="accent"
-              (click)="loadVocalData(url);toggleElementVisibility('vocalContent');revealNext(2)"
-              mat-button>See the Vocal Data</button>
-      <div id="vocalContent"
-           style="display: none">
+    <div align="center" *ngIf="(downloadURL | async) as url">
+      <br />
+      <hr />
+      <br />
+      <button
+        color="accent"
+        (click)="
+          loadVocalData(url);
+          toggleElementVisibility('vocalContent');
+          revealNext(2)
+        "
+        mat-button
+      >
+        See the Vocal Data
+      </button>
+      <div id="vocalContent" style="display: none">
         <h3>Vocal Data</h3>
         <!-- load a audio file -->
         <div id="waveform"></div>
+        <br />
+        <mat-button-toggle-group *ngIf="wavesurferLoaded">
+          <mat-button-toggle
+            (click)="wavesurfer.skipBackward()"
+            class="button primary"
+          >
+            <mat-icon>skip_previous</mat-icon>
+          </mat-button-toggle>
+          <mat-button-toggle
+            (mouseenter)="hoveredWSB = true"
+            (mouseleave)="hoveredWSB = false"
+            (click)="wavesurfer.playPause()"
+            class="button primary"
+          >
+            <mat-icon>{{
+              wavesurfer.isPlaying()
+                ? hoveredWSB
+                  ? 'pause_circle_filled'
+                  : 'pause_circle_outline'
+                : hoveredWSB
+                ? 'play_circle_filled'
+                : 'play_circle_outline'
+            }}</mat-icon>
+          </mat-button-toggle>
+          <mat-button-toggle
+            (click)="wavesurfer.skipForward()"
+            class="button primary"
+          >
+            <mat-icon>skip_next</mat-icon> </mat-button-toggle
+          ><mat-button-toggle
+            (click)="wavesurfer.toggleMute()"
+            class="button primary"
+          >
+            <mat-icon>{{
+              wavesurfer.getMute() ? 'volume_off' : 'volume_up'
+            }}</mat-icon>
+          </mat-button-toggle>
+        </mat-button-toggle-group>
       </div>
     </div>
   </div>

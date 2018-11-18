@@ -7,7 +7,9 @@
     "build": "ng build --build-optimizer --aot",
     "test": "ng test",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "deploy": "firebase deploy",
+    "serve": "firebase serve"
   },
   "private": true,
   "dependencies": {

@@ -37,8 +37,17 @@ export class FileUploadComponent implements OnInit {
   // State for dropzone CSS toggling
   isHovering: boolean;
 
+  // File sizes for filtering
   fileSizes = [10, 100, 1000, 10000, 100000, 10000000, 10000000000];
 
+  // WaveSurfer library variable
+  wavesurfer: any;
+
+  // Boolean variable for if play buttons are hovered
+  hoveredWSB = false;
+
+  // Boolean variable for if wavesurfer has loaded the file
+  wavesurferLoaded = false;
   constructor(
     private storage: AngularFireStorage,
     private db: AngularFirestore
@@ -91,7 +100,7 @@ export class FileUploadComponent implements OnInit {
       tap(snap => {
         if (snap.bytesTransferred === snap.totalBytes) {
           // Update firestore on completion
-          this.db.collection('MIDI').add({ path, size: snap.totalBytes });
+          this.db.collection(folder).add({ path, size: snap.totalBytes });
         }
       })
     );
@@ -107,7 +116,7 @@ export class FileUploadComponent implements OnInit {
   // Loads Vocal Data
   loadVocalData(url) {
     $('#waveform').html('');
-    const wavesurfer = WaveSurfer.create({
+    this.wavesurfer = WaveSurfer.create({
       container: '#waveform',
       waveColor: '#455a64',
       progressColor: '#FFD183',
@@ -115,7 +124,10 @@ export class FileUploadComponent implements OnInit {
       responsive: true,
       autoCenter: true,
     });
-    wavesurfer.load(url);
+    this.wavesurfer.load(url);
+    this.wavesurfer.on('ready', () => {
+      this.wavesurferLoaded = true;
+    });
   }
   // Reveals next button for Steps
   revealNext(i) {

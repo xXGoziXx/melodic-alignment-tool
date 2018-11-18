@@ -28,3 +28,10 @@ textarea {
   width: 100%;
   height: 500px;
 }
+#WSMediaButtons>mat-button-toggle>mat-icon {
+  transition: all 1s ease;
+  transform: scale(1);
+  &:hover {
+    transform: scale(1.5);
+  }
+}
