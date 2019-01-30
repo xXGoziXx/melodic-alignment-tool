@@ -7,6 +7,7 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { FileUploadComponent } from '../file-upload/file-upload.component';
+import { ComparisonComponent } from '../comparison/comparison.component';
 @Component({
   selector: 'mat-home',
   templateUrl: './home.component.html',

@@ -55,6 +55,7 @@ import { HomeComponent } from './home/home.component';
 import { MidiCreatorComponent } from './midi-creator/midi-creator.component';
 import { NavComponent } from './nav/nav.component';
 import { TableComponent } from './table/table.component';
+import { ComparisonComponent } from './comparison/comparison.component';
 
 const appRoutes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -76,6 +77,7 @@ const appRoutes: Routes = [
     FileUploadComponent,
     FileSizePipe,
     DropZoneDirective,
+    ComparisonComponent,
   ],
   imports: [
     RouterModule.forRoot(appRoutes),

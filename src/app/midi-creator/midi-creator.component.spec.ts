@@ -8,9 +8,8 @@ describe('MidiCreatorComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ MidiCreatorComponent ]
-    })
-    .compileComponents();
+      declarations: [MidiCreatorComponent],
+    }).compileComponents();
   }));
 
   beforeEach(() => {

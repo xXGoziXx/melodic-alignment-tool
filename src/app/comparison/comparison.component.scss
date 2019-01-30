@@ -1,0 +1,15 @@
+@import "../../styles.scss";
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  font-weight: 200;
+  height: 300px;
+  border-radius: 5px;
+  font-size: 1.2em;
+  margin: 10px 0;
+  border: 2px solid mat-color($accent, A200);
+  color: #dadada !important;
+  background: mat-color($primary, 600);
+}

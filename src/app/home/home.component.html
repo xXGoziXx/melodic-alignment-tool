@@ -1,49 +1,51 @@
-<mat-vertical-stepper labelPosition="bottom"
-                      [linear]="!isLinear"
-                      #stepper>
-  <ng-template matStepperIcon="done"
-               let-index="index"
-               matStepLabel></ng-template>
-  <mat-step label="Import a MIDI file"
-            [stepControl]="firstFormGroup">
+<mat-vertical-stepper labelPosition="bottom" [linear]="!isLinear" #stepper>
+  <ng-template
+    matStepperIcon="done"
+    let-index="index"
+    matStepLabel
+  ></ng-template>
+  <mat-step label="Import a MIDI file" [stepControl]="firstFormGroup">
     <form [formGroup]="firstFormGroup">
       <mat-file-upload [step]="'1'"></mat-file-upload>
-      <br>
+      <br />
       <div>
-        <button mat-stroked-button
-                style="display: none"
-                matStepperNext
-                id="next1">Next</button>
+        <button
+          mat-stroked-button
+          style="display: none"
+          matStepperNext
+          id="next1"
+        >
+          Next
+        </button>
       </div>
     </form>
   </mat-step>
-  <mat-step label="Import an audio Vocal file"
-            [stepControl]="secondFormGroup">
+  <mat-step label="Import an audio Vocal file" [stepControl]="secondFormGroup">
     <form [formGroup]="secondFormGroup">
-
       <div>
-
         <mat-file-upload [step]="'2'"></mat-file-upload>
-        <br>
+        <br />
         <div>
-          <button mat-stroked-button
-                  matStepperPrevious>Back</button>
-          <button mat-stroked-button
-                  style="display: none"
-                  matStepperNext
-                  id="next2">Next</button>
+          <button mat-stroked-button matStepperPrevious>Back</button>
+          <button
+            mat-stroked-button
+            style="display: none"
+            matStepperNext
+            id="next2"
+          >
+            Next
+          </button>
         </div>
       </div>
     </form>
   </mat-step>
   <mat-step label="Result">
-    You are now done.
-    <br> Heres the result:
+    You are now done. <br />
+    Heres the result:
+    <mat-comparison></mat-comparison>
     <div>
-      <button mat-stroked-button
-              matStepperPrevious>Back</button>
-      <button mat-stroked-button
-              (click)="stepper.reset()">Reset</button>
+      <button mat-stroked-button matStepperPrevious>Back</button>
+      <button mat-stroked-button onclick="location.reload();">Reset</button>
     </div>
   </mat-step>
 </mat-vertical-stepper>
