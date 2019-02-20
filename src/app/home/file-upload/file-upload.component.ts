@@ -1,10 +1,10 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 import {
   AngularFireStorage,
   AngularFireUploadTask,
 } from 'angularfire2/storage';
-import { Observable } from 'rxjs';
+import { Observable, Observer } from 'rxjs';
 import { finalize, tap } from 'rxjs/operators';
 import { AngularFirestore } from 'angularfire2/firestore';
 
@@ -19,8 +19,9 @@ import * as $ from 'jquery';
 })
 export class FileUploadComponent implements OnInit {
   // Determines which step user is on
-  @Input()
-  step: string;
+  @Input() step: string;
+  // Sends the URL to the Home Component
+  @Output() fileUrl = new EventEmitter<string>();
   // Main task
   task: AngularFireUploadTask;
 
@@ -41,13 +42,18 @@ export class FileUploadComponent implements OnInit {
   fileSizes = [10, 100, 1000, 10000, 100000, 10000000, 10000000000];
 
   // WaveSurfer library variable
-  wavesurfer: any;
+  wavesurfer: any = { isPlaying: () => {}, getMute: () => {} };
 
   // Boolean variable for if play buttons are hovered
   hoveredWSB = false;
 
   // Boolean variable for if wavesurfer has loaded the file
-  wavesurferLoaded = false;
+  wavesurferLoaded: Observable<boolean | false> = new Observable(
+    (subscriber: Observer<boolean>) => {
+      subscriber.next(true);
+      // subscriber.complete();
+    }
+  );
   constructor(
     private storage: AngularFireStorage,
     private db: AngularFirestore
@@ -61,15 +67,17 @@ export class FileUploadComponent implements OnInit {
     // The File object
     const file = event.item(0);
 
-    // Client-side validation
+    // Client-side validation for files
     if (
-      file.type.split('/')[0] !== 'audio' &&
-      file.type.split('/')[1] !== ('mid' || 'midi' || 'x-midi')
+      (file.type.split('/')[0] === 'audio' &&
+        file.type.split('/')[1] === ('mid' || 'midi' || 'x-midi') &&
+        folder === 'MIDI') ||
+      (file.type.split('/')[0] === 'audio' && folder === 'Vocal')
     ) {
+      console.log('File Type:' + file.type);
+    } else {
       console.error('Unsupported File Type! :( \n MIDI File Expected...');
       return;
-    } else {
-      console.log('File Type:' + file.type);
     }
 
     // The storage path
@@ -115,6 +123,7 @@ export class FileUploadComponent implements OnInit {
   }
   // Loads Vocal Data
   loadVocalData(url) {
+    this.fileUrl.emit(url);
     $('#waveform').html('');
     this.wavesurfer = WaveSurfer.create({
       container: '#waveform',
@@ -124,9 +133,12 @@ export class FileUploadComponent implements OnInit {
       responsive: true,
       autoCenter: true,
     });
+    this.wavesurfer.on('error', err => {
+      console.log(err);
+    });
     this.wavesurfer.load(url);
     this.wavesurfer.on('ready', () => {
-      this.wavesurferLoaded = true;
+      this.wavesurferLoaded.subscribe();
     });
   }
   // Reveals next button for Steps

@@ -6,8 +6,7 @@ import {
   FormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { FileUploadComponent } from '../file-upload/file-upload.component';
-import { ComparisonComponent } from '../comparison/comparison.component';
+import { ComparisonComponent } from './comparison/comparison.component';
 @Component({
   selector: 'mat-home',
   templateUrl: './home.component.html',
@@ -17,9 +16,15 @@ export class HomeComponent implements OnInit {
   isLinear = true;
   firstFormGroup: FormGroup;
   secondFormGroup: FormGroup;
-
-  constructor(private _formBuilder: FormBuilder) {}
-
+  public vocalUrl = 'home';
+  constructor(
+    private _formBuilder: FormBuilder,
+    public comp: ComparisonComponent
+  ) {}
+  getVocalUrl($event) {
+    console.log('Vocal Url: ' + $event);
+    this.vocalUrl = $event;
+  }
   ngOnInit() {
     this.firstFormGroup = this._formBuilder.group({
       firstCtrl: ['', Validators.required],

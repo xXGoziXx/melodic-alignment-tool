@@ -1,10 +1,15 @@
 <mat-vertical-stepper labelPosition="bottom" [linear]="!isLinear" #stepper>
-  <ng-template
-    matStepperIcon="done"
-    let-index="index"
-    matStepLabel
-  ></ng-template>
-  <mat-step label="Import a MIDI file" [stepControl]="firstFormGroup">
+  <ng-template matStepperIcon="done">
+    <mat-icon>done_all</mat-icon></ng-template
+  >
+  <ng-template matStepperIcon="number" let-index="index">
+    {{ index + 1 }}
+  </ng-template>
+  <mat-step
+    label="Import a MIDI file"
+    [stepControl]="firstFormGroup"
+    editable="true"
+  >
     <form [formGroup]="firstFormGroup">
       <mat-file-upload [step]="'1'"></mat-file-upload>
       <br />
@@ -20,10 +25,17 @@
       </div>
     </form>
   </mat-step>
-  <mat-step label="Import an audio Vocal file" [stepControl]="secondFormGroup">
+  <mat-step
+    label="Import an audio Vocal file"
+    [stepControl]="secondFormGroup"
+    editable="true"
+  >
     <form [formGroup]="secondFormGroup">
       <div>
-        <mat-file-upload [step]="'2'"></mat-file-upload>
+        <mat-file-upload
+          (fileUrl)="getVocalUrl($event)"
+          [step]="'2'"
+        ></mat-file-upload>
         <br />
         <div>
           <button mat-stroked-button matStepperPrevious>Back</button>
@@ -32,6 +44,7 @@
             style="display: none"
             matStepperNext
             id="next2"
+            (click)="comp.compare(this.vocalUrl)"
           >
             Next
           </button>
@@ -39,7 +52,7 @@
       </div>
     </form>
   </mat-step>
-  <mat-step label="Result">
+  <mat-step state="done" label="Result" editable="false">
     You are now done. <br />
     Heres the result:
     <mat-comparison></mat-comparison>

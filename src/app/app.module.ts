@@ -49,13 +49,13 @@ import { AboutComponent } from './about/about.component';
 import { AppComponent } from './app.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { DropZoneDirective } from './drop-zone/drop-zone.directive';
-import { FileUploadComponent } from './file-upload/file-upload.component';
+import { FileUploadComponent } from './home/file-upload/file-upload.component';
 import { FileSizePipe } from './file-size/file-size';
 import { HomeComponent } from './home/home.component';
 import { MidiCreatorComponent } from './midi-creator/midi-creator.component';
 import { NavComponent } from './nav/nav.component';
 import { TableComponent } from './table/table.component';
-import { ComparisonComponent } from './comparison/comparison.component';
+import { ComparisonComponent } from './home/comparison/comparison.component';
 
 const appRoutes: Routes = [
   { path: 'home', component: HomeComponent },
@@ -128,7 +128,7 @@ const appRoutes: Routes = [
     MatTreeModule,
     ReactiveFormsModule,
   ],
-  providers: [],
+  providers: [ComparisonComponent],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

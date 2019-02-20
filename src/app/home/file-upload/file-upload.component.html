@@ -163,12 +163,12 @@
         <!-- load a audio file -->
         <div id="waveform"></div>
         <br />
-        <mat-button-toggle-group *ngIf="wavesurferLoaded">
+        <mat-button-toggle-group *ngIf="(wavesurferLoaded | async)">
           <mat-button-toggle
             (click)="wavesurfer.skipBackward()"
             class="button primary"
           >
-            <mat-icon>skip_previous</mat-icon>
+            <mat-icon>fast_rewind</mat-icon>
           </mat-button-toggle>
           <mat-button-toggle
             (mouseenter)="hoveredWSB = true"
@@ -190,7 +190,7 @@
             (click)="wavesurfer.skipForward()"
             class="button primary"
           >
-            <mat-icon>skip_next</mat-icon> </mat-button-toggle
+            <mat-icon>fast_forward</mat-icon> </mat-button-toggle
           ><mat-button-toggle
             (click)="wavesurfer.toggleMute()"
             class="button primary"
