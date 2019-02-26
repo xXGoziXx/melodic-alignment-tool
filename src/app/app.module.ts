@@ -42,7 +42,10 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule, Routes } from '@angular/router';
 import { AngularFireModule } from 'angularfire2';
-import { AngularFirestoreModule } from 'angularfire2/firestore';
+import {
+  AngularFirestoreModule,
+  FirestoreSettingsToken,
+} from 'angularfire2/firestore';
 import { AngularFireStorageModule } from 'angularfire2/storage';
 import { environment } from '../environments/environment';
 import { AboutComponent } from './about/about.component';
@@ -128,7 +131,10 @@ const appRoutes: Routes = [
     MatTreeModule,
     ReactiveFormsModule,
   ],
-  providers: [ComparisonComponent],
+  providers: [
+    { provide: FirestoreSettingsToken, useValue: {} },
+    ComparisonComponent,
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}
