@@ -70,13 +70,19 @@ export class FileUploadComponent implements OnInit {
     // Client-side validation for files
     if (
       (file.type.split('/')[0] === 'audio' &&
-        file.type.split('/')[1] === ('mid' || 'midi' || 'x-midi') &&
+        (file.type.split('/')[1] === 'mid' ||
+          file.type.split('/')[1] === 'midi' ||
+          file.type.split('/')[1] === 'x-midi') &&
         folder === 'MIDI') ||
       (file.type.split('/')[0] === 'audio' && folder === 'Vocal')
     ) {
       console.log('File Type:' + file.type);
     } else {
-      console.error('Unsupported File Type! :( \n MIDI File Expected...');
+      console.error(
+        'Unsupported File Type! \n MIDI File Expected. But got "' +
+          file.type +
+          '" instead.'
+      );
       return;
     }
 
