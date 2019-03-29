@@ -57,7 +57,7 @@ import { FileSizePipe } from './file-size/file-size';
 import { HomeComponent } from './home/home.component';
 import { MidiCreatorComponent } from './midi-creator/midi-creator.component';
 import { NavComponent } from './nav/nav.component';
-import { TableComponent } from './table/table.component';
+import { TableComponent } from './home/comparison/table/table.component';
 import { ComparisonComponent } from './home/comparison/comparison.component';
 
 const appRoutes: Routes = [

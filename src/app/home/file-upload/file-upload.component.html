@@ -67,7 +67,10 @@
       <button
         color="accent"
         (click)="
-          loadMidiData(url); toggleElementVisibility('midiform'); revealNext(1)
+          loadMidiData(url);
+          toggleElementVisibility('midiform');
+          revealNext(1);
+          scrollToBottom()
         "
         mat-button
       >
@@ -106,7 +109,9 @@
       <button mat-flat-button color="primary" (click)="fileInput.click()">
         Choose a File &nbsp;<mat-icon>cloud_upload</mat-icon>
       </button>
-      <br /><span>(For better results make sure the audio is mono)</span>
+      <br /><br /><span
+        >(For more accurate results, please make sure the audio is mono)</span
+      >
     </div>
   </div>
   <br />

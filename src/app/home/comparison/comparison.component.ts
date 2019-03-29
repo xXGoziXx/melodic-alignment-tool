@@ -26,6 +26,7 @@ export class ComparisonComponent implements OnInit {
   result: any;
   moreAccurateFrequencies: Array<any>;
   midiFrequencies = [];
+  showScoreChart = false;
   public compare(vocalUrl, midiData) {
     this.vocalUrl = vocalUrl;
     this.midiData = midiData;
@@ -144,14 +145,12 @@ export class ComparisonComponent implements OnInit {
         ),
         this.euclideanDistance
       );
-      this.distance = dtw.getDistance();
-      this.path = dtw.getPath();
-      this.result = this.distance / this.path.length;
+      self.distance = dtw.getDistance();
+      self.path = dtw.getPath();
+      self.result = this.distance / this.path.length;
       console.log('Distance: ', this.distance);
       console.log('Path: ', this.path);
       console.log('Result: ', this.result);
-      $('span#distance').html(this.distance);
-      $('span#result').html(this.result);
       const ctx: any = document.getElementById('VocalChart');
       const ctxDTW: any = document.getElementById('DTWChart');
       const options = {
@@ -180,9 +179,28 @@ export class ComparisonComponent implements OnInit {
       const dataDTW = this.path;
       console.log('Vocal Frequencies Data: ', data);
       const g = new Dygraph(ctx, data, options);
-      const gDTW = new Dygraph(ctxDTW, dataDTW, optionsDTW);
+      // const gDTW = new Dygraph(ctxDTW, dataDTW, optionsDTW);
     };
+    $(() => {
+      const VocalChart = document.getElementById('VocalChart');
+      // create an observer instance
+      const pickedObserver = new MutationObserver(mutations => {
+        mutations.forEach(mutation => {
+          // @ts-ignore
+          // console.log('Change Detected: ', mutation.target.innerHTML);
+          $('span#distance').html(self.distance);
+          $('span#result').html(self.result);
+        });
+      });
+
+      // configuration of the observer:
+      const config = { attributes: true, childList: true, characterData: true };
+
+      // pass in the target node, as well as the observer options
+      pickedObserver.observe(VocalChart, config);
+    });
   }
+
   calcQTime(time: number, tempo: number, timeSig: number) {
     // convert to minute
     const time2Mins = time / 60;

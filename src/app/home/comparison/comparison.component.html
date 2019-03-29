@@ -1,15 +1,32 @@
 <div class="container">
+  <h2 align="center">
+    The Results Are In
+  </h2>
   <div id="loader" *ngIf="vocalChart.children.length === 0">
     <mat-spinner></mat-spinner>
     <p class="loading-text">loading results...</p>
   </div>
   <div id="VocalChart" style="height: 70vh; width: 80vw;" #vocalChart></div>
-  <hr />
+  <br />
   <div id="dtw" *ngIf="vocalChart.children.length !== 0">
     <br />
     <b>Distance: </b><span id="distance"></span>
     <br />
-    <b>Result: </b><span id="result"></span> <br />
+    <b>Score: </b><span id="result"></span> <br />
+    <br />
   </div>
-  <div id="DTWChart" style="height: 70vh; width: 80vw;"></div>
+  <button
+    mat-icon-button
+    (click)="showScoreChart = !showScoreChart"
+    aria-label="toggle score chart"
+  >
+    <mat-icon class="mat-icon-rtl-mirror">
+      {{ showScoreChart ? 'expand_more' : 'chevron_right' }}
+    </mat-icon>
+    <h2>Score Chart</h2>
+  </button>
+  <div id="scoreChart" [hidden]="!showScoreChart">
+    <mat-data-table></mat-data-table>
+    <!-- <div id="DTWChart" style="height: 70vh; width: 80vw;"></div> -->
+  </div>
 </div>
