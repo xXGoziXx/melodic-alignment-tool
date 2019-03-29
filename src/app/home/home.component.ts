@@ -17,14 +17,20 @@ export class HomeComponent implements OnInit {
   firstFormGroup: FormGroup;
   secondFormGroup: FormGroup;
   public vocalUrl = 'home';
+  public midiData = 'home';
   constructor(
     private _formBuilder: FormBuilder,
     public comp: ComparisonComponent
   ) {}
   getVocalUrl($event) {
-    console.log('Vocal Url: ' + $event);
+    // console.log('Vocal Url: ' + $event);
     this.vocalUrl = $event;
   }
+  getMidiData($event) {
+    // console.log('Midi Data: ' + $event);
+    this.midiData = $event;
+  }
+
   ngOnInit() {
     this.firstFormGroup = this._formBuilder.group({
       firstCtrl: ['', Validators.required],

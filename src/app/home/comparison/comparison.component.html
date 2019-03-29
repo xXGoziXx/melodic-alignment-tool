@@ -1,4 +1,15 @@
 <div class="container">
-  <p>{{ 'loading results...' }}</p>
-  <canvas id="VocalChart" width="auto" height="400"></canvas>
+  <div id="loader" *ngIf="vocalChart.children.length === 0">
+    <mat-spinner></mat-spinner>
+    <p class="loading-text">loading results...</p>
+  </div>
+  <div id="VocalChart" style="height: 70vh; width: 80vw;" #vocalChart></div>
+  <hr />
+  <div id="dtw" *ngIf="vocalChart.children.length !== 0">
+    <br />
+    <b>Distance: </b><span id="distance"></span>
+    <br />
+    <b>Result: </b><span id="result"></span> <br />
+  </div>
+  <div id="DTWChart" style="height: 70vh; width: 80vw;"></div>
 </div>

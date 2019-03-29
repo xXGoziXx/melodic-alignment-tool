@@ -1,6 +1,6 @@
 // Custom Theming for Angular Material
 // For more information: https://material.angular.io/guide/theming
-@import "~@angular/material/theming";
+@import '~@angular/material/theming';
 // Plus imports for other components in your app.
 
 // Include the common styles for Angular Material. We include this here so that you only
@@ -39,10 +39,12 @@ $warn: map-get($melodic-alignment-tool-theme, warn);
 html,
 body {
   height: 100%;
+  overflow-x: hidden;
+  user-select: none;
 }
 body {
   margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
 }
 .mat-progress-bar {
   height: 10px;
@@ -64,6 +66,10 @@ body {
     mat-color($accent, A400)
   );
 }
+// .mat-progress-spinner circle,
+// .mat-spinner circle {
+//   stroke: mat-color($primary);
+// }
 mat-button-toggle {
   &.primary {
     color: white;
@@ -77,5 +83,19 @@ mat-button-toggle {
 button {
   mat-icon {
     margin-bottom: 2.5px;
+  }
+}
+#VocalChart,
+#DTWChart {
+  .dygraph-label {
+    text-align: center;
+    &.dygraph-title {
+      color: white;
+      text-align: center;
+      font-weight: bold;
+    }
+    &.dygraph-ylabel {
+      transform: rotate(270deg);
+    }
   }
 }

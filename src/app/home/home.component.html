@@ -34,6 +34,7 @@
       <div>
         <mat-file-upload
           (fileUrl)="getVocalUrl($event)"
+          (midiDataJSON)="getMidiData($event)"
           [step]="'2'"
         ></mat-file-upload>
         <br />
@@ -44,7 +45,7 @@
             style="display: none"
             matStepperNext
             id="next2"
-            (click)="comp.compare(this.vocalUrl)"
+            (click)="comp.compare(this.vocalUrl, this.midiData)"
           >
             Next
           </button>

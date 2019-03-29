@@ -19,6 +19,9 @@
     color: #dadada !important;
     background: mat-color($primary, 600);
   }
+  .file > p {
+    margin: 0 auto;
+  }
 }
 
 progress::-webkit-progress-value {

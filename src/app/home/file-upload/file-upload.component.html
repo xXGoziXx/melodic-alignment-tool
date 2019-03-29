@@ -18,7 +18,7 @@
         hidden
         #fileInput
       />
-      <p><b>or</b></p>
+      <p>or</p>
       <br />
       <button mat-flat-button color="primary" (click)="fileInput.click()">
         Choose a File &nbsp;<mat-icon>cloud_upload</mat-icon>
@@ -96,7 +96,7 @@
       <input
         class="file-input"
         type="file"
-        accept="audio/*"
+        accept="audio/wav"
         (change)="startUpload($event.target.files, 'Vocal')"
         hidden
         #fileInput
@@ -106,6 +106,7 @@
       <button mat-flat-button color="primary" (click)="fileInput.click()">
         Choose a File &nbsp;<mat-icon>cloud_upload</mat-icon>
       </button>
+      <br /><span>(For better results make sure the audio is mono)</span>
     </div>
   </div>
   <br />

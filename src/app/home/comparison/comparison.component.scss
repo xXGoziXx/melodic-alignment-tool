@@ -1,16 +1,25 @@
 @import '../../../styles.scss';
 .container {
-  display: flex;
+  display: grid;
+  grid-row: 1fr;
+  grid-column: 1fr;
   align-items: center;
   justify-content: center;
-  flex-direction: column;
   font-weight: 200;
-  height: auto;
   border-radius: 5px;
   font-size: 1.2em;
   margin: 10px 0;
+  padding: 20px 0;
   border: 2px solid mat-color($accent, A200);
   color: #dadada !important;
   background: mat-color($primary, 600);
-  padding-bottom: 50px;
+}
+#loader {
+  mat-spinner {
+    margin: 0 auto;
+  }
+  .loading-text {
+    text-align: center;
+    margin-bottom: 0;
+  }
 }

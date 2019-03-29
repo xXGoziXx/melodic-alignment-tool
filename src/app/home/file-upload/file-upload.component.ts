@@ -22,6 +22,8 @@ export class FileUploadComponent implements OnInit {
   @Input() step: string;
   // Sends the URL to the Home Component
   @Output() fileUrl = new EventEmitter<string>();
+  // Sends the MIDI data to the Home Component
+  @Output() midiDataJSON = new EventEmitter<string>();
   // Main task
   task: AngularFireUploadTask;
 
@@ -46,7 +48,6 @@ export class FileUploadComponent implements OnInit {
 
   // Boolean variable for if play buttons are hovered
   hoveredWSB = false;
-
   // Boolean variable for if wavesurfer has loaded the file
   wavesurferLoaded: Observable<boolean | false> = new Observable(
     (subscriber: Observer<boolean>) => {
@@ -76,7 +77,7 @@ export class FileUploadComponent implements OnInit {
         folder === 'MIDI') ||
       (file.type.split('/')[0] === 'audio' && folder === 'Vocal')
     ) {
-      console.log('File Type:' + file.type);
+      console.log('File Type: ', file.type);
     } else {
       console.error(
         'Unsupported File Type! \n MIDI File Expected. But got "' +
@@ -121,8 +122,7 @@ export class FileUploadComponent implements OnInit {
   }
   // Loads Midi Data
   loadMidiData(url) {
-    MidiConvert.load(url, function(midi) {
-      // console.log(midi);
+    MidiConvert.load(url, midi => {
       $('#midiContent').html(JSON.stringify(midi));
       return midi;
     });
@@ -130,6 +130,7 @@ export class FileUploadComponent implements OnInit {
   // Loads Vocal Data
   loadVocalData(url) {
     this.fileUrl.emit(url);
+    this.midiDataJSON.emit($('#midiContent').html());
     $('#waveform').html('');
     this.wavesurfer = WaveSurfer.create({
       container: '#waveform',

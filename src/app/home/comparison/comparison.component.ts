@@ -1,7 +1,11 @@
 import { Component, OnInit, Input } from '@angular/core';
 import Chart from 'chart.js';
+import Dygraph from 'dygraphs';
 import * as Pitchfinder from 'pitchfinder';
 import WavDecoder from 'wav-decoder';
+import MIDIUtils from 'midiutils';
+import DynamicTimeWarping from 'dynamic-time-warping';
+import { MIDI } from 'midi';
 @Component({
   selector: 'mat-comparison',
   templateUrl: './comparison.component.html',
@@ -9,13 +13,24 @@ import WavDecoder from 'wav-decoder';
 })
 export class ComparisonComponent implements OnInit {
   @Input() vocalUrl: string;
+  @Input() midiData: string;
   arrayBuffer: any;
   fileReader = new FileReader();
   detectPitch = new Pitchfinder.YIN();
   pitch: any;
-  public compare(vocalUrl) {
+  midiTempo = 120;
+  midiTimeSig = 4;
+  midi: MIDI;
+  distance: any;
+  path: any;
+  result: any;
+  moreAccurateFrequencies: Array<any>;
+  midiFrequencies = [];
+  public compare(vocalUrl, midiData) {
     this.vocalUrl = vocalUrl;
-    console.log('vocalUrl: ' + this.vocalUrl);
+    this.midiData = midiData;
+    // console.log('vocalUrl: ' + this.vocalUrl);
+    // console.log('midiData: ' + this.midiData);
     fetch(this.vocalUrl)
       .then(res => res.blob()) // get's the response and returns it as a blob
       .then(blob => {
@@ -29,6 +44,29 @@ export class ComparisonComponent implements OnInit {
     const self = this;
     // when the file is read
     this.fileReader.onload = (e: any) => {
+      self.midi = JSON.parse(self.midiData);
+      let trackIndex = 0;
+      // if there is a bpm
+      if (self.midi.header.bpm !== undefined) {
+        self.midiTempo = self.midi.header.bpm;
+      }
+      // if there is a time signature
+      if (self.midi.header.timeSignature !== undefined) {
+        /* gets the time signature from
+           Header's timeSignature array,
+           depending on which track is being used
+        */
+        for (const index in self.midi.tracks) {
+          if (self.midi.tracks.hasOwnProperty(index)) {
+            const track = self.midi.tracks[index];
+            if (track.length !== 0) {
+              trackIndex = parseInt(index, 10);
+              self.midiTimeSig = self.midi.header.timeSignature[trackIndex];
+              break;
+            }
+          }
+        }
+      }
       // stores the file as an ArrayBuffer
       self.arrayBuffer = e.currentTarget.result;
       console.log('ArrayBuffer: ', self.arrayBuffer);
@@ -36,112 +74,163 @@ export class ComparisonComponent implements OnInit {
       // get audio data form file using WavDecoder
       const decodedWav = WavDecoder.decode.sync(self.arrayBuffer);
       console.log('Sample Rate: ', decodedWav.sampleRate);
-      const detectors = [Pitchfinder.YIN()];
-      let moreAccurateFrequencies = Pitchfinder.frequencies(
+      const detectors = [Pitchfinder.AMDF()];
+      console.log('Tempo: ', self.midiTempo);
+      console.log('Quantization: ', self.midiTimeSig);
+
+      this.moreAccurateFrequencies = Pitchfinder.frequencies(
         detectors,
         decodedWav.channelData[0],
         {
-          tempo: 128, // in BPM, defaults to 120
-          quantization: 4, // samples per beat, defaults to 4 (i.e. 16th notes)
+          tempo: self.midiTempo, // in BPM, defaults to 120
+          quantization: self.midiTimeSig, // samples per beat, defaults to 4 (i.e. 16th notes)
         }
       );
-      /* vocal test data pre-calculated */
-      // tslint:disable-next-line: max-line-length
-      /*[17640.395528936995,18726.972774623853,210,212.12277483468188,234.5937743620731,18454.110180588144,281.1160910016887,277.4343256108928,283.30533337205463,280.47114053065536,280.8846737684757,282.01989876947385,279.564367380423,281.9702747122019,0,0,281.8279065120751,278.20077871517884,278.38408350070523,312.12665025285503,330.1659354063537,0,284.9978920125136,0,318.82445758558754,356.10281590054433,348.57414745722696,353.7549022929497,352.6164957272168,0,0,0,319.38047239137677,353.29785527682094,352.399556844769,351.578487078433,353.70538363345617,352.657657844728,350.61807505248055,356.5070266463866,356.57823447486146,355.1522291167095,0,18557.02854455429,18402.560463070815,17923.635388751045,17827.67823459781,0,18164.967011454395,208.95158762649635,213.36663539012926,210.48385833703082,206.03373003928812,0,239.67847467425364,279.5193544893314,280.0979129887348,279.11392405063293,18630.15450411411,286.460504058385,232.18910368658288,18670.748917040208,209.69877284162712,18079.728508373006,0,17916.056621886884,17994.077578443532,18677.42310924685,0,0,0,231.5588714445374,233.42755078747862,235.64257982659967,0,276.18362805992916,281.1754277180157,280.9761764707367,279.1425053802541,317.123905222104,0,0,281.5203725323482,284.1150132672389,282.1898285266621,279.22708227355866,283.23267461330204,280.96549262944075,280.7487641596633,18136.555084571937]*/
-      moreAccurateFrequencies = moreAccurateFrequencies.map(
+      const midiFreqRaw = self.midi.tracks[trackIndex].notes.map(note => ({
+        x: this.calcQTime(note.time, self.midiTempo, self.midiTimeSig),
+        y: NaN,
+        z: MIDIUtils.noteNumberToFrequency(note.midi),
+      }));
+      // padded results for midi
+      for (
+        let index = 0;
+        index <
+        this.calcQTime(
+          self.midi.tracks[trackIndex].duration,
+          self.midiTempo,
+          self.midiTimeSig
+        );
+        index++
+      ) {
+        if (midiFreqRaw.findIndex(xyz => xyz.x === index) !== -1) {
+          // if theres a note at this quantized time in the midi file
+          self.midiFrequencies.push({
+            x: index,
+            y: NaN,
+            z: midiFreqRaw.find(xyz => xyz.x === index).z,
+          });
+        } else {
+          // otherwise use the last one
+          self.midiFrequencies.push({
+            x: index,
+            y: NaN,
+            z: self.midiFrequencies.find(xyz => xyz.x === index - 1).z,
+          });
+        }
+      }
+
+      self.moreAccurateFrequencies = self.moreAccurateFrequencies.map(
         (element, index) => ({
           x: index,
           y: element,
+          z: NaN,
         })
       );
-      // console.log(
-      //   'Accurate Frequencies:' +
-      //     moreAccurateFrequencies.map(e => JSON.stringify(e)).toString()
-      // );
+      // pad NaN values
+      for (
+        let index = 0;
+        index < self.moreAccurateFrequencies.length;
+        index++
+      ) {
+        if (isNaN(self.moreAccurateFrequencies[index].y)) {
+          self.moreAccurateFrequencies[index].y =
+            index === 0 ? 0 : self.moreAccurateFrequencies[index - 1].y;
+        }
+      }
+      const dtw = new DynamicTimeWarping(
+        this.prepareSignature(this.midiFrequencies.map(xyz => [xyz.x, xyz.z])),
+        this.prepareSignature(
+          this.moreAccurateFrequencies.map(xyz => [xyz.x, xyz.y])
+        ),
+        this.euclideanDistance
+      );
+      this.distance = dtw.getDistance();
+      this.path = dtw.getPath();
+      this.result = this.distance / this.path.length;
+      console.log('Distance: ', this.distance);
+      console.log('Path: ', this.path);
+      console.log('Result: ', this.result);
+      $('span#distance').html(this.distance);
+      $('span#result').html(this.result);
       const ctx: any = document.getElementById('VocalChart');
-      const LineConfig: Chart.ChartConfiguration = {
-        type: 'line',
-        data: {
-          labels: moreAccurateFrequencies.map(xy => xy.x),
-          datasets: [
-            {
-              data: moreAccurateFrequencies.map(xy => xy.y),
-              label: 'Vocal Pitches',
-              borderColor: '#ffab40',
-              fill: false,
-            },
-          ],
-        },
-        options: {
-          title: {
-            display: true,
-            text: 'Chart of Vocal Pitches',
-          },
-          legend: { display: false },
-        },
+      const ctxDTW: any = document.getElementById('DTWChart');
+      const options = {
+        legend: 'always',
+        rollPeriod: 7,
+        title: 'Frequency Graph',
+        labels: ['QTime', 'Vocal', 'MIDI'],
+        xlabel: 'Quantized Time',
+        ylabel: 'Frequency',
+        colors: ['#ffd180', '#7cb342'],
       };
-      const ScatterConfig: Chart.ChartConfiguration = {
-        type: 'scatter',
-        data: {
-          datasets: [
-            {
-              label: 'Vocals Frequency Graph',
-              fill: false,
-              backgroundColor: '#546E79',
-              borderColor: '#ffab40',
-              data: moreAccurateFrequencies,
-            },
-          ],
-        },
-        options: {
-          responsive: true,
-          title: {
-            display: true,
-            text: 'Chart.js Line Chart',
-          },
-          legend: { display: false },
-          tooltips: {
-            mode: 'index' as Chart.InteractionMode,
-            intersect: false,
-          },
-          hover: {
-            mode: 'nearest' as Chart.InteractionMode,
-            intersect: true,
-          },
-          scales: {
-            xAxes: [
-              {
-                type: 'linear',
-                display: false,
-                scaleLabel: {
-                  display: true,
-                  labelString: 'Index',
-                  fontColor: 'white',
-                },
-                gridLines: {
-                  color: '#C8CBCD',
-                },
-              },
-            ],
-            yAxes: [
-              {
-                display: true,
-                scaleLabel: {
-                  display: true,
-                  labelString: 'Frequency',
-                  fontColor: 'white',
-                },
-                gridLines: {
-                  color: '#C8CBCD',
-                },
-              },
-            ],
-          },
-        },
+      const optionsDTW = {
+        legend: 'always',
+        rollPeriod: 7,
+        title: 'DTW Graph',
+        labels: ['QTime', 'DTW Path'],
+        xlabel: 'Quantized Time',
+        ylabel: 'Frequency',
+        colors: ['#ffffff'],
       };
-      const frequencyChart = new Chart(ctx, ScatterConfig);
+
+      const data = this.mergeFreqArray(
+        self.moreAccurateFrequencies.map(xyz => [xyz.x, xyz.y, NaN]),
+        self.midiFrequencies.map(xyz => [xyz.x, NaN, xyz.z])
+      );
+      const dataDTW = this.path;
+      console.log('Vocal Frequencies Data: ', data);
+      const g = new Dygraph(ctx, data, options);
+      const gDTW = new Dygraph(ctxDTW, dataDTW, optionsDTW);
     };
   }
-
+  calcQTime(time: number, tempo: number, timeSig: number) {
+    // convert to minute
+    const time2Mins = time / 60;
+    // get the number of beats
+    const mins2Beats = time2Mins * tempo;
+    // get the Quantized time
+    const qTime = mins2Beats * timeSig;
+    return qTime;
+  }
+  mergeFreqArray(vFreq, mFreq) {
+    const maxLength = Math.max(vFreq.length, mFreq.length);
+    const res = [];
+    for (let index = 0; index < maxLength; index++) {
+      const vI = vFreq.findIndex(e => e[0] === index);
+      const mI = mFreq.findIndex(e => e[0] === index);
+      if (mI === -1 && vI === -1) {
+        res.push([index, NaN, NaN]);
+      } else if (vI === -1) {
+        res.push([index, NaN, mFreq[mI][2]]);
+      } else if (mI === -1) {
+        res.push([index, vFreq[vI][1], NaN]);
+      } else {
+        res.push([index, vFreq[vI][1], mFreq[mI][2]]);
+      }
+    }
+    return res;
+  }
+  euclideanDistance(a, b) {
+    const xDiff = a[0] - b[0];
+    const yDiff = a[1] - b[1];
+    const ED = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
+    return ED;
+  }
+  // data is an array of arrays with the x coordinate in 0 and y in 1
+  prepareSignature(data) {
+    let xMean = 0;
+    let yMean = 0;
+    const diffData = [];
+    for (let i = 0; i < data.length; i++) {
+      xMean = xMean + data[i][0];
+      yMean = yMean + data[i][1];
+    }
+    xMean = xMean / data.length;
+    yMean = yMean / data.length;
+    for (let i = 0; i < data.length; i++) {
+      diffData[i] = [data[i][0] - xMean, data[i][1] - yMean];
+    }
+    return diffData;
+  }
   ngOnInit() {}
 }
