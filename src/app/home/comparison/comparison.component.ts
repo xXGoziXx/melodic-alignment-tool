@@ -79,7 +79,7 @@ export class ComparisonComponent implements OnInit {
       console.log('Tempo: ', self.midiTempo);
       console.log('Quantization: ', self.midiTimeSig);
 
-      this.moreAccurateFrequencies = Pitchfinder.frequencies(
+      self.moreAccurateFrequencies = Pitchfinder.frequencies(
         detectors,
         decodedWav.channelData[0],
         {
@@ -92,6 +92,7 @@ export class ComparisonComponent implements OnInit {
         y: NaN,
         z: MIDIUtils.noteNumberToFrequency(note.midi),
       }));
+      self.midiFrequencies = [];
       // padded results for midi
       for (
         let index = 0;
@@ -139,20 +140,20 @@ export class ComparisonComponent implements OnInit {
         }
       }
       const dtw = new DynamicTimeWarping(
-        this.prepareSignature(this.midiFrequencies.map(xyz => [xyz.x, xyz.z])),
-        this.prepareSignature(
-          this.moreAccurateFrequencies.map(xyz => [xyz.x, xyz.y])
+        self.prepareSequence(self.midiFrequencies.map(xyz => [xyz.x, xyz.z])),
+        self.prepareSequence(
+          self.moreAccurateFrequencies.map(xyz => [xyz.x, xyz.y])
         ),
-        this.euclideanDistance
+        self.euclideanDistance
       );
       self.distance = dtw.getDistance();
       self.path = dtw.getPath();
-      self.result = this.distance / this.path.length;
-      console.log('Distance: ', this.distance);
-      console.log('Path: ', this.path);
-      console.log('Result: ', this.result);
+      self.result = self.distance / self.path.length;
+      console.log('Distance: ', self.distance);
+      console.log('Path: ', self.path);
+      console.log('Result: ', self.result);
       const ctx: any = document.getElementById('VocalChart');
-      const ctxDTW: any = document.getElementById('DTWChart');
+      // const ctxDTW: any = document.getElementById('DTWChart');
       const options = {
         legend: 'always',
         rollPeriod: 7,
@@ -172,11 +173,11 @@ export class ComparisonComponent implements OnInit {
         colors: ['#ffffff'],
       };
 
-      const data = this.mergeFreqArray(
+      const data = self.mergeFreqArray(
         self.moreAccurateFrequencies.map(xyz => [xyz.x, xyz.y, NaN]),
         self.midiFrequencies.map(xyz => [xyz.x, NaN, xyz.z])
       );
-      const dataDTW = this.path;
+      const dataDTW = self.path;
       console.log('Vocal Frequencies Data: ', data);
       const g = new Dygraph(ctx, data, options);
       // const gDTW = new Dygraph(ctxDTW, dataDTW, optionsDTW);
@@ -188,8 +189,10 @@ export class ComparisonComponent implements OnInit {
         mutations.forEach(mutation => {
           // @ts-ignore
           // console.log('Change Detected: ', mutation.target.innerHTML);
-          $('span#distance').html(self.distance);
           $('span#result').html(self.result);
+          if ($('span#result').html() === '') {
+            $('span#result').html('Audio Too Short');
+          }
         });
       });
 
@@ -210,6 +213,7 @@ export class ComparisonComponent implements OnInit {
     const qTime = mins2Beats * timeSig;
     return qTime;
   }
+
   mergeFreqArray(vFreq, mFreq) {
     const maxLength = Math.max(vFreq.length, mFreq.length);
     const res = [];
@@ -228,14 +232,16 @@ export class ComparisonComponent implements OnInit {
     }
     return res;
   }
+
   euclideanDistance(a, b) {
     const xDiff = a[0] - b[0];
     const yDiff = a[1] - b[1];
     const ED = Math.sqrt(xDiff * xDiff + yDiff * yDiff);
     return ED;
   }
+
   // data is an array of arrays with the x coordinate in 0 and y in 1
-  prepareSignature(data) {
+  prepareSequence(data) {
     let xMean = 0;
     let yMean = 0;
     const diffData = [];
@@ -250,5 +256,6 @@ export class ComparisonComponent implements OnInit {
     }
     return diffData;
   }
+
   ngOnInit() {}
 }
